@@ -6,7 +6,6 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
-import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -18,10 +17,6 @@ import lombok.Setter;
 @Table(name = "NOTIFICATION")
 public class Notification extends TraceableEntity {
 
-    @TenantId
-    @Column(name = "TENANT_ID")
-    private String tenantId;
-
     @Column(name = "APPLICATION_ID")
     private String applicationId;
 
@@ -30,9 +25,6 @@ public class Notification extends TraceableEntity {
 
     @Column(name = "DELIVERED_AT")
     private String deliveredAt;
-
-    @Column(name = "READ_AT")
-    private String readAt;
 
     @Column(name = "SENDER_ID")
     private String senderId;
@@ -51,13 +43,6 @@ public class Notification extends TraceableEntity {
     @Enumerated(STRING)
     private Severity severity;
 
-    @Column(name = "MEDIA")
-    @Enumerated(STRING)
-    private Media media;
-
-    @Embedded
-    private Content content;
-
     @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContentMeta> contentMeta;
 
@@ -72,8 +57,4 @@ public class Notification extends TraceableEntity {
         CRITICAL
     }
 
-    public enum Media {
-        EMAIL,
-        ONECX_UI
-    }
 }

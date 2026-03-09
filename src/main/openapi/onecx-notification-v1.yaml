@@ -63,20 +63,17 @@ components:
      $ref: '#/components/schemas/Severity'
     issuer:
      $ref: '#/components/schemas/Issuer'
-    contentBody:
-     type: string
-    contentTitle:
-     type: string
-    contentIcon:
-     type: string
     contentMeta:
      type: array
      items:
       $ref: '#/components/schemas/ContentMeta'
   ContentMeta:
    type: object
-   additionalProperties:
-    type: string
+   properties:
+    key:
+     type: string
+    value:
+     type: string
   Severity:
    type: string
    enum:

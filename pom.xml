@@ -41,20 +41,14 @@
             <artifactId>tkit-quarkus-rest</artifactId>
         </dependency>
 
-        <!-- TENANT -->
-        <dependency>
-            <groupId>org.tkit.onecx.quarkus</groupId>
-            <artifactId>onecx-tenant</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.tkit.quarkus.lib</groupId>
-            <artifactId>tkit-quarkus-jpa-tenant</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
             <artifactId>tkit-quarkus-rest-context</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.tkit.quarkus.lib</groupId>
+            <artifactId>tkit-quarkus-security</artifactId>
+        </dependency>
         <!-- QUARKUS -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -110,7 +104,15 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-redis-client</artifactId>
+            <artifactId>quarkus-rest-client-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.openapi.generator</groupId>
+            <artifactId>quarkus-openapi-generator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-oidc-filter</artifactId>
         </dependency>
         <!-- OTHER -->
         <dependency>
@@ -184,23 +186,9 @@
                         <useJakartaEe>true</useJakartaEe>
                         <useSwaggerAnnotations>false</useSwaggerAnnotations>
                         <java17>true</java17>
-                        <useMutiny>true</useMutiny>
-                        <supportAsync>true</supportAsync>
                     </configOptions>
                 </configuration>
                 <executions>
-                    <execution>
-                        <id>internal</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>src/main/openapi/onecx-notification-internal.yaml</inputSpec>
-                            <apiPackage>gen.org.tkit.onecx.notification.rs.internal</apiPackage>
-                            <modelPackage>gen.org.tkit.onecx.notification.rs.internal.model</modelPackage>
-                            <modelNameSuffix>DTO</modelNameSuffix>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>external-v1</id>
                         <goals>
@@ -213,9 +201,40 @@
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>internal</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-notification-internal.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.notification.rs.internal</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.notification.rs.internal.model</modelPackage>
+                            <modelNameSuffix>DTO</modelNameSuffix>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-        </plugins>
+            <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>notification-bff</id>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://raw.githubusercontent.com/JordenReuter/onecx-notification-bff/refs/heads/master/src/main/openapi/openapi-bff.yaml</url>
+                        <outputDirectory>target/tmp/openapi</outputDirectory>
+                        <outputFileName>onecx-notification-bff.yaml</outputFileName>
+                        <skipCache>true</skipCache>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
     </build>
 
 </project>

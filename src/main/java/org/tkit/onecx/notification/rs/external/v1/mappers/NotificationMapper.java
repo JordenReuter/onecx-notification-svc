@@ -1,23 +1,25 @@
-package org.tkit.onecx.notification.rs.internal.mappers;
+package org.tkit.onecx.notification.rs.external.v1.mappers;
+
+import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.notification.domain.models.ContentMeta;
 import org.tkit.onecx.notification.domain.models.Notification;
+import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.notification.rs.internal.model.ContentMetaDTO;
-import gen.org.tkit.onecx.notification.rs.internal.model.NotificationDTO;
+import gen.org.tkit.onecx.notification.bff.client.model.NotificationBffDTO;
+import gen.org.tkit.onecx.notification.rs.external.v1.model.ContentMetaDTOV1;
+import gen.org.tkit.onecx.notification.rs.external.v1.model.NotificationDTOV1;
 
-@Mapper
+@Mapper(uses = OffsetDateTimeMapper.class)
 public interface NotificationMapper {
-    @Mapping(target = "tenantId", ignore = true)
+
     @Mapping(target = "sentAt", ignore = true)
-    @Mapping(target = "readAt", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
-    @Mapping(target = "media", ignore = true)
     @Mapping(target = "issuedBy", source = "issuer")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deliveredAt", ignore = true)
@@ -25,10 +27,9 @@ public interface NotificationMapper {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
-    @Mapping(target = "content.body", source = "contentBody")
-    @Mapping(target = "content.title", source = "contentTitle")
-    @Mapping(target = "content.icon", source = "contentIcon")
-    Notification map(NotificationDTO notificationDTO);
+    Notification map(NotificationDTOV1 notificationDTOV1);
+
+    List<ContentMeta> map(List<ContentMetaDTOV1> contentMetaDTOV1s);
 
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "persisted", ignore = true)
@@ -40,5 +41,9 @@ public interface NotificationMapper {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
-    ContentMeta map(ContentMetaDTO contentMetaDTO);
+    ContentMeta map(ContentMetaDTOV1 contentMetaDTOV1);
+
+    @Mapping(target = "persist", ignore = true)
+    @Mapping(target = "issuer", source = "issuedBy")
+    NotificationBffDTO mapToBffDTO(Notification notification);
 }
